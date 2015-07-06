@@ -79,12 +79,35 @@
     //
     // test if a specific row on this board contains a conflict
     hasRowConflictAt: function(rowIndex) {
-      return false; // fixme
+      var row = this.rows();
+      row = row[rowIndex];
+      var contains = false;
+      var conflict = false;
+
+      row.forEach(function(item){
+        if(item === 1){
+          if(contains){
+            conflict = true;
+          } else {
+            contains = true;
+          }
+        }
+      });
+
+      return conflict; 
     },
 
     // test if any rows on this board contain conflicts
     hasAnyRowConflicts: function() {
-      return false; // fixme
+      var rows = this.rows();
+
+      for(var i = 0; i < rows.length; i++){
+        if(this.hasRowConflictAt(i)){
+          return true;
+        }
+
+      }
+      return false; 
     },
 
 
@@ -94,12 +117,34 @@
     //
     // test if a specific column on this board contains a conflict
     hasColConflictAt: function(colIndex) {
-      return false; // fixme
+      var rows = this.rows();
+      var found = false; 
+      var conflict = false;
+
+      rows.forEach(function(row){
+        if (row[colIndex] === 1) {
+          if (found) {
+            conflict = true;
+          } else {
+            found = true;
+          }
+        }
+      });
+
+      return conflict; 
     },
 
     // test if any columns on this board contain conflicts
     hasAnyColConflicts: function() {
-      return false; // fixme
+      var rows = this.rows();
+
+      for (var i = 0; i< rows.length; i++) {
+        if (this.hasColConflictAt(i)) {
+          return true;
+        }
+      }
+
+      return false; 
     },
 
 
@@ -109,12 +154,42 @@
     //
     // test if a specific major diagonal on this board contains a conflict
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
-      return false; // fixme
+      var rows = this.rows();
+      var found = false;
+      var conflict = false;
+
+      for(var i = 0; i < rows.length; i++){
+        var x = majorDiagonalColumnIndexAtFirstRow[0]+i;
+        var y = majorDiagonalColumnIndexAtFirstRow[1]+i;
+
+        if (x < rows.length && y < rows.length){
+          if(rows[x][y] === 1){
+            if(found){
+              conflict = true;
+            } else {
+              found = true;
+            }
+          }
+        }
+      }
+      return conflict; 
     },
 
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
-      return false; // fixme
+      var rows = this.rows();
+      
+      if(this.hasMajorDiagonalConflictAt([0, 0])){
+        return true;
+      }
+
+      for(var i = 1; i < rows.length; i++){
+        if(this.hasMajorDiagonalConflictAt([0, i]) ||
+           this.hasMajorDiagonalConflictAt([i, 0])){
+          return true;
+        }
+      }
+      return false; 
     },
 
 
@@ -124,12 +199,42 @@
     //
     // test if a specific minor diagonal on this board contains a conflict
     hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
-      return false; // fixme
+      var rows = this.rows();
+      var found = false;
+      var conflict = false;
+
+      for(var i = 0; i < rows.length; i++){
+        var x = minorDiagonalColumnIndexAtFirstRow[0]+i;
+        var y = Math.abs(minorDiagonalColumnIndexAtFirstRow[1]-i);
+
+        if (x < rows.length && y >= 0){
+          if(rows[x][y] === 1){
+            if(found){
+              conflict = true;
+            } else {
+              found = true;
+            }
+          }
+        }
+      }
+      return conflict; 
     },
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
-      return false; // fixme
+      var rows = this.rows();
+      
+      if(this.hasMinorDiagonalConflictAt([0, rows.length-1])){
+        return true;
+      }
+
+      for(var i = 1; i < rows.length; i++){
+        if(this.hasMinorDiagonalConflictAt([0, rows.length-i]) ||
+           this.hasMinorDiagonalConflictAt([rows.length-i, rows.length-1])){
+          return true;
+        }
+      }
+      return false; 
     }
 
     /*--------------------  End of Helper Functions  ---------------------*/
@@ -140,7 +245,7 @@
   var makeEmptyMatrix = function(n) {
     return _(_.range(n)).map(function() {
       return _(_.range(n)).map(function() {
-        return 0;
+        return rows.length-1;
       });
     });
   };
