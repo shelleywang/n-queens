@@ -203,11 +203,16 @@
       var found = false;
       var conflict = false;
 
-      for(var i = 0; i < rows.length; i++){
-        var x = minorDiagonalColumnIndexAtFirstRow[0]+i;
-        var y = Math.abs(minorDiagonalColumnIndexAtFirstRow[1]-i);
+      var x = minorDiagonalColumnIndexAtFirstRow[0];
+      var y = minorDiagonalColumnIndexAtFirstRow[1];
+      var looplength = y-x;
 
-        if (x < rows.length && y >= 0){
+      if(rows[x][y] === 1) {
+        found = true;
+      }
+      for(var i = 0; i < looplength; i++){
+        x = x+1;
+        y = y-1;
           if(rows[x][y] === 1){
             if(found){
               conflict = true;
@@ -215,7 +220,6 @@
               found = true;
             }
           }
-        }
       }
       return conflict; 
     },
@@ -223,15 +227,16 @@
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
       var rows = this.rows();
-      
-      if(this.hasMinorDiagonalConflictAt([0, rows.length-1])){
-        return true;
-      }
-
-      for(var i = 1; i < rows.length; i++){
-        if(this.hasMinorDiagonalConflictAt([0, rows.length-i]) ||
-           this.hasMinorDiagonalConflictAt([rows.length-i, rows.length-1])){
+      if (rows.length > 0){
+        if(this.hasMinorDiagonalConflictAt([0, rows.length-1])){
           return true;
+        }
+
+        for(var i = 1; i < rows.length; i++){
+            if(this.hasMinorDiagonalConflictAt([0, rows.length-i]) ||
+               this.hasMinorDiagonalConflictAt([rows.length-i, rows.length-1])){
+              return true;
+          }
         }
       }
       return false; 
