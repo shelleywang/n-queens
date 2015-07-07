@@ -90,14 +90,14 @@ window.findNQueensSolution = function(n) {
         var newBoard = copyBoard(boardrows,n);
     
         newBoard.togglePiece(row, i);
-        console.log(JSON.stringify(newBoard.rows()));
-        console.log('row: ' + row + ' i: ' + i)
+        //console.log(JSON.stringify(newBoard.rows()));
+        //console.log('row: ' + row + ' i: ' + i)
       if(newBoard.hasAnyQueensConflicts()){
-        console.log("Detected conflict");
+        //console.log("Detected conflict");
         } else if((row+1) < n) {
           recurseBoard(newBoard, row+1);
         } else if ((row+1) ===n) {
-          console.log('found a solution!');
+          //console.log('found a solution!');
           //console.log(JSON.stringify(newBoard.rows()));
           solutions.push(newBoard.rows());
         }
@@ -105,7 +105,12 @@ window.findNQueensSolution = function(n) {
   }
 
   recurseBoard(new Board({n:n}), 0);
-  return solutions[0];
+  if (solutions[0]) {
+    console.log('Single solution for ' + n + ' queens:', JSON.stringify(solutions[0]));
+    return solutions[0];
+  } else {
+    return solution.rows();
+  }
 };
 
 
@@ -114,29 +119,27 @@ window.countNQueensSolutions = function(n) {
   console.log('STARTING' + n);
   var solution = new Board({n:n});
   var solutions = [];
-
   if (n === 0) {
     return 1;
-  } else if (n ===4) {
-    return 2;
-  } else if (n ===5) {
-    return 10;
   }
-  var recurseBoard = function(boardrows, row){ 
+  var recurseBoard = function(boardrows, row){ // CURRENTLY TAKES 5MINUTES
       for (var i = 0; i<n;i++) {
         var newBoard = copyBoard(boardrows,n);
-  
         newBoard.togglePiece(row, i);
-
-        if(newBoard.hasAnyQueensConflicts()){
+        //console.log(JSON.stringify(newBoard.rows()));
+        //console.log('row: ' + row + ' i: ' + i)
+      if(newBoard.hasAnyQueensConflicts()){
+        //console.log("Detected conflict");
         } else if((row+1) < n) {
           recurseBoard(newBoard, row+1);
         } else if ((row+1) ===n) {
-          console.log(JSON.stringify(newBoard.rows()));
-          solutions.push(newBoard);
+          //console.log('found a solution!');
+          //console.log(JSON.stringify(newBoard.rows()));
+          solutions.push(newBoard.rows());
         }
       }
   }
+
   recurseBoard(new Board({n:n}), 0);
 
   var solutionCount = solutions.length; 
