@@ -48,33 +48,30 @@ var copyBoard = function(board, num) {
 }
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
-window.countNRooksSolutions = function(n) { // CURRENTLY TAKES 5MINUTES
-  console.log('starting ' + n);
+window.countNRooksSolutions = function(n) { // CURRENTLY TAKES <2MINUTES
+  //console.log('starting ' + n);
   var solution = new Board({n:n});
   var solutions = [];
 
-  var recurseBoard = function(boardrows, row,skip){ 
+  var recurseBoard = function(row,skip){ 
       for (var i = 0; i<n;i++) {
-        var newBoard = copyBoard(boardrows,n);
-        //console.log(skip);
         var newskip = skip.slice();
-        //console.log(newskip);
 
         if (newskip.indexOf(i) === -1) {
-          //console.log('not skipping');
-          newBoard.togglePiece(row, i);
+          solution.togglePiece(row, i);
 
-          if(newBoard.hasAnyRooksConflicts()){
+          if(solution.hasAnyRooksConflicts()){
           } else if((row+1) < n) {
             newskip.push(i);
-            recurseBoard(newBoard, row+1,newskip);
+            recurseBoard(row+1,newskip);
           } else if ((row+1) ===n) {
-            solutions.push(newBoard);
+            solutions.push(solution.rows());
+            solution = new Board({n:n});
           }
         }
       }
   }
-  recurseBoard(new Board({n:n}), 0,[]);
+  recurseBoard(0,[]);
 
   var solutionCount = solutions.length; 
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
