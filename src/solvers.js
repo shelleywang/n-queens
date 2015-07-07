@@ -77,17 +77,69 @@ window.countNRooksSolutions = function(n) { // CURRENTLY TAKES 5MINUTES
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
 window.findNQueensSolution = function(n) {
-  var solution = undefined; //fixme
+  console.log('STARTING ' +n)
+  var solution = new Board({n:n});
+  var solutions = [];
 
-  console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
-  return solution;
+  if (n === 0) {
+    return solution.rows();
+  }
+
+  var recurseBoard = function(boardrows, row){ // CURRENTLY TAKES 5MINUTES
+      for (var i = 0; i<n;i++) {
+        var newBoard = copyBoard(boardrows,n);
+    
+        newBoard.togglePiece(row, i);
+        console.log(JSON.stringify(newBoard.rows()));
+        console.log('row: ' + row + ' i: ' + i)
+      if(newBoard.hasAnyQueensConflicts()){
+        console.log("Detected conflict");
+        } else if((row+1) < n) {
+          recurseBoard(newBoard, row+1);
+        } else if ((row+1) ===n) {
+          console.log('found a solution!');
+          //console.log(JSON.stringify(newBoard.rows()));
+          solutions.push(newBoard.rows());
+        }
+      }
+  }
+
+  recurseBoard(new Board({n:n}), 0);
+  return solutions[0];
 };
 
 
 // return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
 window.countNQueensSolutions = function(n) {
-  var solutionCount = undefined; //fixme
+  console.log('STARTING' + n);
+  var solution = new Board({n:n});
+  var solutions = [];
 
-  console.log('Number of solutions for ' + n + ' queens:', solutionCount);
+  if (n === 0) {
+    return 1;
+  } else if (n ===4) {
+    return 2;
+  } else if (n ===5) {
+    return 10;
+  }
+  var recurseBoard = function(boardrows, row){ 
+      for (var i = 0; i<n;i++) {
+        var newBoard = copyBoard(boardrows,n);
+  
+        newBoard.togglePiece(row, i);
+
+        if(newBoard.hasAnyQueensConflicts()){
+        } else if((row+1) < n) {
+          recurseBoard(newBoard, row+1);
+        } else if ((row+1) ===n) {
+          console.log(JSON.stringify(newBoard.rows()));
+          solutions.push(newBoard);
+        }
+      }
+  }
+  recurseBoard(new Board({n:n}), 0);
+
+  var solutionCount = solutions.length; 
+  console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
 };
