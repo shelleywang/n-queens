@@ -55,9 +55,10 @@ window.countNRooksSolutions = function(n) {
           } else if((row+1) < n) {
             newskip.push(i);
             recurseBoard(row+1,newskip);
+            solution.togglePiece(row,i);
           } else if ((row+1) ===n) {
             solutions.push(solution.rows());
-            solution = new Board({n:n});
+            solution.togglePiece(row,i);
           }
         }
       }
@@ -118,40 +119,25 @@ window.countNQueensSolutions = function(n) {
   if (n === 0) {
     return 1;
   }
-  var recurseBoard = function(boardrows, row){ // CURRENTLY TAKES 5MINUTES
+  var recurseBoard = function(row){
       for (var i = 0; i<n;i++) {
-        var newBoard = copyBoard(boardrows,n);
-        newBoard.togglePiece(row, i);
-        //console.log(JSON.stringify(newBoard.rows()));
-        //console.log('row: ' + row + ' i: ' + i)
-      if(newBoard.hasAnyQueensConflicts()){
-        //console.log("Detected conflict");
+        solution.togglePiece(row, i);
+        if(solution.hasAnyQueensConflicts()){
+          solution.togglePiece(row, i);
         } else if((row+1) < n) {
-          recurseBoard(newBoard, row+1);
+          recurseBoard(row+1);
+          solution.togglePiece(row, i);
         } else if ((row+1) ===n) {
-          //console.log('found a solution!');
-          //console.log(JSON.stringify(newBoard.rows()));
-          solutions.push(newBoard.rows());
+          solutions.push(solution.rows());
+          solution.togglePiece(row,i);
         }
       }
   }
 
-  recurseBoard(new Board({n:n}), 0);
+  recurseBoard(0);
 
   var solutionCount = solutions.length; 
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
 };
 
-
-var copyBoard = function(board, num) {
-  var newBoard = new Board({n:num});
-  for (var i = 0; i< num; i++) {
-    for (var j = 0; j< num;j++) {
-      if (board.rows()[i][j]) {
-        newBoard.togglePiece(i,j);
-      }
-    }
-  }
-  return newBoard;
-}
