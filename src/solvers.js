@@ -113,7 +113,6 @@ window.findNQueensSolution = function(n) {
 
 // return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
 window.countNQueensSolutions = function(n) {
-  console.log('STARTING' + n);
   var solution = new Board({n:n});
   var solutions = [];
   if (n === 0) {
@@ -140,4 +139,46 @@ window.countNQueensSolutions = function(n) {
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
 };
+
+
+window.bitwiseCountNQueensSolutions = function(n) {
+  var counter = 0;
+
+  var all = (1<<n)-1; 
+
+  var recurseBoard = function(col, ld, rd, all){
+    var pos = ~(col | rd | ld) & all;
+
+    while(pos>0){
+        
+      var bit = pos & -pos;
+      pos = pos^bit;
+
+      recurseBoard((col|bit), (ld|bit)<<1, (rd|bit)>>1, all);
+    }
+
+    if (col == all) {
+      counter++;
+    }
+  }
+
+  recurseBoard(0,0,0,all);
+
+  return counter;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
